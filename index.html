@@ -1,0 +1,285 @@
+<html lang="en">
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OmenisAI - Intelligent Chat Assistant</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/dracula.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/csharp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/php.min.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        hljs.configure({
+          ignoreUnescapedHTML: true
+        });
+        hljs.highlightAll();
+      });
+    </script>
+  
+    <!-- Add MathJax for mathematical notation -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  
+    <!-- Add KaTeX for instant math rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+  
+    <!-- Add Marked for markdown parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <div id="loginOverlay" class="login-overlay">
+        <div class="login-container">
+            <div class="login-content">
+                <svg class="login-logo" viewBox="0 0 100 100" width="80" height="80">
+                    <circle cx="50" cy="50" r="45" fill="#7C3AED" />
+                    <circle cx="35" cy="40" r="8" fill="#ffffff" />
+                    <circle cx="65" cy="40" r="8" fill="#ffffff" />
+                    <path d="M35 65 Q50 80 65 65" stroke="#ffffff" stroke-width="4" fill="none" />
+                    <path d="M20 25 L30 15" stroke="#ffffff" stroke-width="4" />
+                    <path d="M80 25 L70 15" stroke="#ffffff" stroke-width="4" />
+                </svg>
+                <h2>Welcome to OmenisAI</h2>
+                <p>Your Intelligent AI Assistant</p>
+                <button id="googleLoginBtn" class="google-login-btn">
+                    <svg viewBox="0 0 24 24" width="24" height="24">
+                        <path fill="#EA4335" d="M5.26620003,9.76452941 C6.19878754,6.93863203 8.85444915,4.90909091 12,4.90909091 C13.6909091,4.90909091 15.2181818,5.50909091 16.4181818,6.49090909 L19.9090909,3 C17.7818182,1.14545455 15.0545455,0 12,0 C7.27006974,0 3.1977497,2.69829785 1.23999023,6.65002441 L5.26620003,9.76452941 Z"/>
+                        <path fill="#34A853" d="M16.0407269,18.0125889 C14.9509167,18.7163016 13.5660892,19.0909091 12,19.0909091 C8.86648613,19.0909091 6.21911939,17.076871 5.27698177,14.2678769 L1.23999023,6.65002441 C0.43658717,8.26043162 0,10.0753848 0,12 C0,13.9195484 0.444780743,15.7301709 1.23746264,17.3349879 L5.26620003,9.76452941 Z"/>
+                        <path fill="#4A90E2" d="M19.7466667,21.1481481 C21.9103317,19.3174057 23.2789552,16.5026157 23.2789552,13.0909091 C23.2789552,12.1654024 23.1443433,11.2885918 22.8014379,10.4724097 L12,10.4724097 L12,15.0454545 L18.4363636,15.0454545 C18.1187732,16.6745731 17.2662994,17.9445114 16.0407269,18.0125889 L19.7466667,21.1481481 Z"/>
+                        <path fill="#FBBC05" d="M5.27698177,14.2678769 C5.03832634,13.556323 4.90909091,12.7937589 4.90909091,12 C4.90909091,11.2182781 5.03443647,10.4668121 5.26620003,9.76452941 L1.23999023,6.65002441 C0.43658717,8.26043162 0,10.0753848 0,12 C0,13.9195484 0.444780743,15.7301709 1.23746264,17.3349879 L5.26620003,9.76452941 Z"/>
+                    </svg>
+                    <span>Continue with Google</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <main class="chat-container">
+            <header class="chat-header">
+                <div class="logo">
+                    <img src="/robot.png" alt="OmenisAI" class="logo-image" width="32" height="32">
+                    <span>OmenisAI</span>
+                </div>
+                <button class="theme-toggle" id="themeToggle" title="Theme: Off" aria-label="Toggle theme">
+                    <span class="dot"></span><span class="label">Off</span>
+                </button>
+                <button class="menu-button" id="menuButton">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+            </header>
+            
+            <div class="menu-overlay" id="menuOverlay"></div>
+            <div class="menu-panel" id="menuPanel">
+                <div class="menu-header">
+                    <h3>Menu</h3>
+                    <button class="menu-close" id="menuClose">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div class="menu-item" id="historyToggle">
+                    <i>📚</i>
+                    <span>Chat History</span>
+                </div>
+                <div id="chatHistory" style="display: none;">
+                    <div class="chat-history-container">
+                        <!-- Chat history items will be dynamically added here -->
+                    </div>
+                </div>
+                
+                <div class="menu-item" id="aboutToggle">
+                    <i>ℹ️</i>
+                    <span>About</span>
+                </div>
+                <div class="about-content" id="aboutContent" style="display: none;">
+                    <p>Welcome to OmenisAI - Your advanced artificial intelligence companion. Powered by cutting-edge language models, OmenisAI offers intelligent conversations, creative assistance, and knowledge sharing across diverse topics. Experience the future of AI interaction with our intuitive and powerful platform.</p>
+                    
+                    <div class="tech-stack">
+                        <h3>Built with Advanced Technologies</h3>
+                        <div class="language-grid">
+                            <div class="language-item">
+                                <div class="language-icon python">
+                                    <img src="/python.png" alt="Python" class="language-logo" width="48" height="48">
+                                    <span>Python</span>
+                                </div>
+                            </div>
+                            <div class="language-item">
+                                <div class="language-icon javascript">
+                                    <img src="/javascript.png" alt="JavaScript" class="language-logo" width="48" height="48">
+                                    <span>JavaScript</span>
+                                </div>
+                            </div>
+                            <div class="language-item">
+                                <div class="language-icon java">
+                                    <img src="/java.png" alt="Java" class="language-logo" width="48" height="48">
+                                    <span>Java</span>
+                                </div>
+                            </div>
+                            <div class="language-item">
+                                <div class="language-icon csharp">
+                                    <img src="/c-sharp.png" alt="C#" class="language-logo" width="48" height="48">
+                                    <span>C#</span>
+                                </div>
+                            </div>
+                            <div class="language-item">
+                                <div class="language-icon php">
+                                    <img src="/php.png" alt="PHP" class="language-logo" width="48" height="48">
+                                    <span>PHP</span>
+                                </div>
+                            </div>
+                            <div class="language-item">
+                                <div class="language-icon ruby">
+                                    <svg viewBox="0 0 128 128">
+                                        <path fill="#CC342D" d="M112.005 50.192h-96.01c0 0-16.005 66.963 48.004 66.963 51.006-0.001 48.006-66.963 48.006-66.963zM88.392 88.236c0 0-5.595 6.738-19.454 6.738h-9.877c0 0-19.454 0-19.454-19.454 0 0 0-6.738 6.738-6.738h35.307c0 0 6.738 0 6.738 6.738v12.716zM43.82 32.784h40.359l3.369-6.738h-47.097l3.369 6.738z"></path>
+                                    </svg>
+                                    <span>Ruby</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="tech-description">
+                            OmenisAI leverages these powerful programming languages and frameworks to deliver a robust, 
+                            scalable, and intelligent conversational AI platform. Our architecture combines the best of 
+                            modern technology to provide you with an exceptional AI experience.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="menu-item" id="updatesToggle">
+                    <i>📰</i>
+                    <span>Updates</span>
+                </div>
+                
+                <div class="menu-item" id="developerToggle">
+                    <i>👨‍💻</i>
+                    <span>Developer</span>
+                </div>
+                <div class="developer-content" id="developerContent" style="display: none;">
+                    <div class="developer-profile">
+                        <img src="/picture formal.bmp" alt="Developer Profile" class="developer-image">
+                        <h3>Aakash</h3>
+                        <p class="developer-title">Full Stack Developer</p>
+                        <div class="developer-description">
+                            <p>Hi, I'm Aakash (aka Anonymous), a passionate Full Stack Developer with expertise in creating innovative web solutions. With a deep understanding of both frontend and backend technologies, I specialize in building robust, scalable applications that deliver exceptional user experiences.</p>
+                            <p>My technical arsenal includes:</p>
+                            <ul>
+                                <li>Frontend: React, Vue.js, Angular</li>
+                                <li>Backend: Node.js, Python, Java</li>
+                                <li>Database: MongoDB, PostgreSQL</li>
+                                <li>Cloud: AWS, Google Cloud</li>
+                            </ul>
+                            <p>I'm constantly exploring new technologies and pushing the boundaries of what's possible in web development.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- beta models removed -->
+            </div>
+
+            <div class="messages" id="messages">
+                <div class="welcome-screen">
+                    <div class="welcome-icon">
+                        <img src="/robot.png" alt="OmenisAI Robot" class="robot-image">
+                    </div>
+                    <h1>Welcome to OmenisAI</h1>
+                    <p>Your intelligent conversation partner</p>
+                    <div class="suggestion-chips">
+                        <!-- Chips will be dynamically inserted here -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="input-container">
+                <div class="input-wrapper">
+                    <button class="new-chat-button" id="newChatButton" title="New Chat">
+                        <svg width="20" height="20" viewBox="0 0 24 24">
+                            <path fill="currentColor" d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
+                        </svg>
+                    </button>
+                    <button class="speak-button" id="speakButton" title="Speak">
+                        <svg width="20" height="20" viewBox="0 0 24 24">
+                            <path fill="currentColor" d="M12 14a3 3 0 003-3V6a3 3 0 10-6 0v5a3 3 0 003 3zm5-3a5 5 0 01-10 0H5a7 7 0 0014 0h-2zM11 19v3h2v-3h-2z"/>
+                        </svg>
+                    </button>
+                    <div id="newChatMenu" class="newchat-menu" style="display:none;">
+  <button class="new-option" data-action="new"><span class="dot"></span><span>New Chat</span></button>
+  <button class="new-option" data-action="thinking"><span class="dot"></span><span>Thinking</span></button>
+  <button class="new-option" data-action="deep"><span class="dot"></span><span>Deep Searching</span></button>
+</div>
+                    <textarea 
+                        id="userInput" 
+                        placeholder="Send a message..." 
+                        rows="1"
+                        autofocus
+                    ></textarea>
+                    <button class="send-button" id="sendButton">
+                        <svg width="24" height="24" viewBox="0 0 24 24">
+                            <path fill="currentColor" d="M2,21L23,12L2,3V10L17,12L2,14V21Z" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="input-footer">
+                    <span class="disclaimer">OmenisAI can make mistakes. Consider checking important information.</span>
+                    <button id="privacyLink" class="privacy-link" aria-label="Privacy & Policy">Privacy & Policy</button>
+                </div>
+            </div>
+        </main>
+    </div>
+    <div id="welcomeOverlay" class="welcome-overlay" style="display:none;">
+      <div class="welcome-card">
+        <img src="/robot.png" alt="OmenisAI" width="64" height="64" style="border-radius:12px;box-shadow:0 6px 16px rgba(0,0,0,.35)">
+        <div class="rgb-dots"><span class="r"></span><span class="g"></span><span class="b"></span></div>
+        <h2 class="welcome-title"><span class="rgb">Welcome to OmenisAI</span></h2>
+        <p style="color:#9CA3AF;margin:.5rem 0 1rem">An intelligent assistant for creative problem‑solving, deep reasoning, and effortless coding help — fast, precise, and ready when you are.</p>
+        <button id="welcomeContinue" class="welcome-btn" aria-label="Continue">Continue →</button>
+      </div>
+    </div>
+    <div id="updatesOverlay" class="updates-overlay" style="display:none;">
+      <div class="updates-header">
+        <h2>Latest Updates</h2>
+        <button id="updatesClose" class="updates-close" aria-label="Close">✕</button>
+      </div>
+      <div class="updates-ticker" id="updatesTicker"></div>
+      <div class="updates-grid" id="updatesGrid"></div>
+    </div>
+    <div id="privacyOverlay" class="privacy-overlay" style="display:none;">
+      <div class="updates-header">
+        <button id="privacyBack" class="updates-close" aria-label="Back">← Back</button>
+        <h2>Privacy & Policy</h2>
+        <button id="privacyClose" class="updates-close" aria-label="Close">✕</button>
+      </div>
+      <div class="privacy-body">
+        <h3>Your Privacy Matters</h3>
+        <p>We collect only the data necessary to provide and improve OmenisAI. Conversations may be stored locally for your history and optionally on our servers to enhance features.</p>
+        <h4>Data We Process</h4>
+        <ul>
+          <li>Messages you send to OmenisAI</li>
+          <li>Basic usage analytics (performance, errors)</li>
+          <li>Optional account info if you sign in</li>
+        </ul>
+        <h4>Your Controls</h4>
+        <ul>
+          <li>Delete chats from history at any time</li>
+          <li>Request data export or deletion (where applicable)</li>
+        </ul>
+        <p>By using OmenisAI you agree to these terms. For questions, contact support.</p>
+      </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
